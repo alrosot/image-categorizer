@@ -1,8 +1,10 @@
 package trofo.form;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Component;
 import trofo.service.ImageService;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,10 +14,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by arosot on 14/04/2017.
- */
-public class Main {
+@Component
+public class Application {
 
     private JPanel panel1;
     private JLabel mainImage;
@@ -27,12 +27,13 @@ public class Main {
 
     private ImageService imageService = new ImageService();
 
-    ExecutorService executor = Executors.newFixedThreadPool(10);
+    private final int BACKGROUND_THREADS = 8;
+    ExecutorService executor = Executors.newFixedThreadPool(BACKGROUND_THREADS);
 
-    public Main() {
+    public Application() {
         $$$setupUI$$$();
-        bindKey("RIGHT", () -> Main.this.nextPic());
-        bindKey("LEFT", () -> Main.this.previousPic());
+        bindKey("RIGHT", () -> Application.this.nextPic());
+        bindKey("LEFT", () -> Application.this.previousPic());
 
         images = new ArrayList(FileUtils.listFiles(
                 new File("D:/Photos/2017"),
@@ -69,12 +70,12 @@ public class Main {
     }
 
     private void redraw() {
-        executor.execute(() -> mainImage.setIcon(imageService.getImagePreview(images.get(index).getAbsolutePath()).getPreview()));
-        executor.execute(() -> nextImg1.setIcon(imageService.getImagePreview(images.get(loopIndex(index + 1)).getAbsolutePath()).getThumb()));
-        executor.execute(() -> nextImg2.setIcon(imageService.getImagePreview(images.get(loopIndex(index + 2)).getAbsolutePath()).getThumb()));
-        for (int i = 3; i < 7; i++) {
-            final int j = i;
-            executor.execute(() -> imageService.getImagePreview(images.get(loopIndex(index + j)).getAbsolutePath()).getThumb());
+        mainImage.setIcon(imageService.getImagePreview(images.get(index).getAbsolutePath()).getPreview());
+        nextImg1.setIcon(imageService.getImagePreview(images.get(loopIndex(index + 1)).getAbsolutePath()).getThumb());
+        nextImg2.setIcon(imageService.getImagePreview(images.get(loopIndex(index + 2)).getAbsolutePath()).getThumb());
+        for (int i = 0; i < BACKGROUND_THREADS; i++) {
+            final int j = 3 + index + i;
+            executor.execute(() -> imageService.getImagePreview(images.get(loopIndex(j)).getAbsolutePath()).getThumb());
         }
 
     }
@@ -82,6 +83,18 @@ public class Main {
     private void createUIComponents() {
         mainImage = new JLabel();
 
+    }
+
+    @PostConstruct
+    public void showInterface() {
+        final JFrame frame = new JFrame("Categorizer");
+        frame.setContentPane($$$getRootComponent$$$());
+        frame.pack();
+        final Dimension minimumSize = new Dimension();
+        minimumSize.setSize(1350, 1200);
+        frame.setMinimumSize(minimumSize);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
     /**
