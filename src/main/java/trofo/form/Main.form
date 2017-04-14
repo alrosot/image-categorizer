@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="1314" height="1104"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -26,16 +26,28 @@
             </constraints>
             <properties>
               <focusTraversalPolicyProvider value="false"/>
+              <minimumSize width="1100" height="1100"/>
             </properties>
-            <border type="none" title="Main"/>
-            <children/>
+            <border type="none"/>
+            <children>
+              <component id="23d21" class="javax.swing.JLabel" binding="mainImage" custom-create="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
           </grid>
           <grid id="f6449" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <splitpane position="right"/>
             </constraints>
-            <properties/>
+            <properties>
+              <minimumSize width="200" height="115"/>
+            </properties>
             <border type="none"/>
             <children>
               <grid id="1976d" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -52,8 +64,17 @@
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
-                    <border type="none" title="Image 01"/>
-                    <children/>
+                    <border type="none" title=""/>
+                    <children>
+                      <component id="7ab6d" class="javax.swing.JLabel" binding="nextImg1">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="4" hsize-policy="4" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text value=""/>
+                        </properties>
+                      </component>
+                    </children>
                   </grid>
                   <grid id="b2964" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
@@ -61,8 +82,18 @@
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
-                    <border type="none" title="Image 02"/>
-                    <children/>
+                    <border type="none" title=""/>
+                    <children>
+                      <component id="878f2" class="javax.swing.JLabel" binding="nextImg2">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="4" hsize-policy="4" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <horizontalAlignment value="0"/>
+                          <text value=""/>
+                        </properties>
+                      </component>
+                    </children>
                   </grid>
                 </children>
               </grid>
