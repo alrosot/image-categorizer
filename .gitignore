@@ -5,6 +5,8 @@
 # IntelliJ project files
 .idea
 *.iml
+*.iws
+*.ipr
 out
 gen### Java template
 # Compiled class file
