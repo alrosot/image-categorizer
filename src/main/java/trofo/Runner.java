@@ -2,17 +2,18 @@ package trofo;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
-import trofo.form.Application;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Created by arosot on 14/04/2017.
  */
 @SpringBootApplication
+@EnableJpaRepositories
 public class Runner {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = new SpringApplicationBuilder(Application.class).headless(false).run(args);
+        new SpringApplicationBuilder(Runner.class).headless(false).run(args);
+
     }
 
 }

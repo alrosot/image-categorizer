@@ -1,7 +1,9 @@
 package trofo.form;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import trofo.model.SelectionRepository;
 import trofo.service.ImageService;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +18,9 @@ import java.util.concurrent.Executors;
 
 @Component
 public class Application {
+
+    @Autowired
+    private SelectionRepository selectionRepository;
 
     private JPanel panel1;
     private JLabel mainImage;
@@ -35,6 +40,11 @@ public class Application {
         bindKey("RIGHT", () -> Application.this.nextPic());
         bindKey("LEFT", () -> Application.this.previousPic());
 
+        for (int i = 0; i < 10; i++) {
+            int numericKey = i;
+            bindKey(Integer.toString(numericKey), () -> Application.this.addCategory(numericKey));
+        }
+
         images = new ArrayList(FileUtils.listFiles(
                 new File("D:/Photos/2017"),
                 new String[]{"jpg", "jpeg"},
@@ -43,7 +53,6 @@ public class Application {
 
         redraw();
     }
-
 
     private void bindKey(String right, final Runnable run) {
         panel1.getInputMap().put(KeyStroke.getKeyStroke(right), right);
@@ -77,12 +86,10 @@ public class Application {
             final int j = 3 + index + i;
             executor.execute(() -> imageService.getImagePreview(images.get(loopIndex(j)).getAbsolutePath()).getThumb());
         }
-
     }
 
     private void createUIComponents() {
         mainImage = new JLabel();
-
     }
 
     @PostConstruct
@@ -95,6 +102,10 @@ public class Application {
         frame.setMinimumSize(minimumSize);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    public void addCategory(int catefory) {
+        System.out.println("Adding category " + catefory + " for iamge " + images.get(index));
     }
 
     /**
