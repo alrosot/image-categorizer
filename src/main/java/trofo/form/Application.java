@@ -33,6 +33,7 @@ public class Application {
     private JLabel nextImg1;
     private JLabel nextImg2;
     private JLabel categoriesLabel;
+    private JProgressBar progressBar;
 
     private List<File> images;
     private int index = 0;
@@ -46,6 +47,8 @@ public class Application {
         $$$setupUI$$$();
         bindKey("RIGHT", () -> Application.this.nextPic());
         bindKey("LEFT", () -> Application.this.previousPic());
+        bindKey("Q", () -> Application.this.rotateLeft());
+        bindKey("W", () -> Application.this.rotateRight());
 
         for (int i = 0; i < 10; i++) {
             int numericKey = i;
@@ -57,6 +60,16 @@ public class Application {
                 new String[]{"jpg", "jpeg"},
                 true
         ));
+    }
+
+    private void rotateRight() {
+        imageService.rotateRight(images.get(index).getAbsolutePath());
+        redraw();
+    }
+
+    private void rotateLeft() {
+        imageService.rotateLeft(images.get(index).getAbsolutePath());
+        redraw();
     }
 
     private void bindKey(String right, final Runnable run) {
@@ -88,11 +101,18 @@ public class Application {
         nextImg1.setIcon(imageService.getImagePreview(images.get(loopIndex(index + 1)).getAbsolutePath()).getThumb());
         nextImg2.setIcon(imageService.getImagePreview(images.get(loopIndex(index + 2)).getAbsolutePath()).getThumb());
         updateLabel();
+        updateProgressBar();
 
         for (int i = 0; i < BACKGROUND_THREADS; i++) {
             final int j = 3 + index + i;
             executor.execute(() -> imageService.getImagePreview(images.get(loopIndex(j)).getAbsolutePath()).getThumb());
         }
+    }
+
+    private void updateProgressBar() {
+        progressBar.setMaximum(images.size());
+        progressBar.setValue(index);
+        progressBar.repaint();
     }
 
     private void updateLabel() {
@@ -144,15 +164,17 @@ public class Application {
         splitPane1.setResizeWeight(0.5);
         panel1.add(splitPane1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel2.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel2.setFocusTraversalPolicyProvider(false);
         panel2.setMinimumSize(new Dimension(1100, 1100));
         splitPane1.setLeftComponent(panel2);
         mainImage.setText("");
-        panel2.add(mainImage, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel2.add(mainImage, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         categoriesLabel = new JLabel();
         categoriesLabel.setText("---");
         panel2.add(categoriesLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        progressBar = new JProgressBar();
+        panel2.add(progressBar, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel3.setMinimumSize(new Dimension(200, 115));
