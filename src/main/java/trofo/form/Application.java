@@ -3,6 +3,7 @@ package trofo.form;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import trofo.model.Selection;
 import trofo.model.SelectionRepository;
 import trofo.service.ImageService;
 
@@ -13,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -104,8 +106,16 @@ public class Application {
         frame.setVisible(true);
     }
 
-    public void addCategory(int catefory) {
-        System.out.println("Adding category " + catefory + " for iamge " + images.get(index));
+    public void addCategory(int category) {
+        final String file = images.get(index).getAbsolutePath();
+        final Optional<Selection> persisted = selectionRepository.findByFileAndCategory(file, category);
+        if (persisted.isPresent()) {
+            selectionRepository.delete(persisted.get().getId());
+            System.out.println("Removing category " + category + " for image " + images.get(index));
+        } else {
+            selectionRepository.saveAndFlush(new Selection(file, category));
+            System.out.println("Adding category " + category + " for image " + images.get(index));
+        }
     }
 
     /**

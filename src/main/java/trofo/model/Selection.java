@@ -1,6 +1,7 @@
 package trofo.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
@@ -10,10 +11,23 @@ import javax.persistence.Id;
 public class Selection {
 
     @Id
+    @GeneratedValue
     private Long id;
 
     private String file;
-    private int categoy;
+    private int category;
+
+    public Selection(String file, int category) {
+        this.file = file;
+        this.category = category;
+    }
+
+    public Selection() {
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public String getFile() {
         return file;
@@ -23,11 +37,11 @@ public class Selection {
         this.file = file;
     }
 
-    public int getCategoy() {
-        return categoy;
+    public int getCategory() {
+        return category;
     }
 
-    public void setCategoy(int categoy) {
-        this.categoy = categoy;
+    public void setCategory(int category) {
+        this.category = category;
     }
 }
