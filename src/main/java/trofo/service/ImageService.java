@@ -21,7 +21,6 @@ public class ImageService {
         sheetMap = DBMaker.memoryDB().make()
                 .hashMap("imageMap")
                 .expireStoreSize(512 * 1024 * 1024) //512mb
-
                 .expireAfterCreate()
                 .createOrOpen();
     }
@@ -30,13 +29,23 @@ public class ImageService {
 
     private Queue<String> requests = new ConcurrentLinkedQueue<>();
 
-    public ImagePreview getImagePreview(String path) {
-        ImagePreview image = (ImagePreview) sheetMap.get(path);
-        if (image == null) {
-            image = processImage(path);
+    public ImagePreview getImagePreview(String path, boolean onlyThumbs) {
+        try {
+            ImagePreview image = (ImagePreview) sheetMap.get(path);
+            if (image == null) {
+                image = generateImageThumbs(path);
+            }
+            if (!onlyThumbs) {
+                if (image.getPreview() == null) {
+                    image.setPreview(generateBigPreview(new ImageIcon(path).getImage()));
+                }
+            }
             sheetMap.put(path, image);
+            return image;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        return image;
     }
 
     public void rotateLeft(String path) {
@@ -48,8 +57,7 @@ public class ImageService {
     }
 
     private void rotate(String path, double theta) {
-
-        final ImagePreview imagePreview = getImagePreview(path);
+        final ImagePreview imagePreview = getImagePreview(path, false);
         imagePreview.setPreview(rotate(imagePreview.getPreview(), theta));
         imagePreview.setThumb(rotate(imagePreview.getThumb(), theta));
         sheetMap.put(path, imagePreview);
@@ -83,24 +91,39 @@ public class ImageService {
         return new ImageIcon(op.filter(src, null));
     }
 
-    private ImagePreview processImage(String path) {
+    private ImagePreview generateImageThumbs(String path) {
         final ImageIcon imageIcon = new ImageIcon(path);
         final double iconHeight = imageIcon.getIconHeight();
         final double iconWidth = imageIcon.getIconWidth();
 
-        double ratioPreview;
         double ratioThumb;
 
         if (iconHeight > iconWidth) {
-            ratioPreview = 1100 / iconHeight;
-            ratioThumb = 200 / iconHeight;
+            ratioThumb = 400 / iconHeight;
         } else {
-            ratioPreview = 1100 / iconWidth;
-            ratioThumb = 200 / iconWidth;
+            ratioThumb = 400 / iconWidth;
         }
 
-
         final Image image = imageIcon.getImage();
-        return new ImagePreview(new ImageIcon(image.getScaledInstance((int) (iconWidth * ratioPreview), (int) (iconHeight * ratioPreview), Image.SCALE_SMOOTH)), new ImageIcon(image.getScaledInstance((int) (iconWidth * ratioThumb), (int) (iconHeight * ratioThumb), Image.SCALE_SMOOTH)));
+
+        return new ImagePreview(null,
+                new ImageIcon(image.getScaledInstance((int) (iconWidth * ratioThumb), (int) (iconHeight * ratioThumb), Image.SCALE_FAST)));
+    }
+
+    private ImageIcon generateBigPreview(Image image) {
+        ImageIcon preview;
+        double height = image.getHeight(null);
+        double width = image.getWidth(null);
+
+        double ratioPreview;
+
+        if (height > width) {
+            ratioPreview = 1100 / height;
+        } else {
+            ratioPreview = 1100 / width;
+        }
+
+        preview = new ImageIcon(image.getScaledInstance((int) (width * ratioPreview), (int) (height * ratioPreview), Image.SCALE_FAST));
+        return preview;
     }
 }

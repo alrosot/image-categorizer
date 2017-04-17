@@ -19,6 +19,7 @@ public class CategoryService {
         categoryNames.put(1, "1 - D. Dirce/D. Maria");
         categoryNames.put(2, "2 - Familia do Miguel");
         categoryNames.put(3, "3 - Mostrar parentes");
+        categoryNames.put(0, "0 - APAGAR");
     }
 
     public String getSelectedCategories(String file) {
