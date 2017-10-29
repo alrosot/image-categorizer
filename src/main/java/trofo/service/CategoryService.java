@@ -2,6 +2,7 @@ package trofo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import trofo.dto.AlbumDto;
 import trofo.model.Selection;
 import trofo.model.SelectionRepository;
 
@@ -16,10 +17,16 @@ public class CategoryService {
     private Map<Integer, String> categoryNames = new HashMap<>();
 
     public CategoryService() {
-        categoryNames.put(1, "1 - D. Dirce/D. Maria");
-        categoryNames.put(2, "2 - Familia do Miguel");
-        categoryNames.put(3, "3 - Mostrar parentes");
-        categoryNames.put(0, "0 - APAGAR");
+        categoryNames.put(1, "Parentes Miguel");
+        categoryNames.put(2, "Nosso");
+        categoryNames.put(3, "porta retrato");
+        categoryNames.put(0, "APAGAR");
+    }
+
+    public List<AlbumDto> getCategoriesInUse(){
+        List<AlbumDto> albuns = new ArrayList<>();
+        selectionRepository.findCategory().stream().forEach(integer -> albuns.add(new AlbumDto(integer, categoryNames.get(integer))));
+        return albuns;
     }
 
     public String getSelectedCategories(String file) {
