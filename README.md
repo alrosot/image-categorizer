@@ -1,4 +1,6 @@
 # image-categorizer
-Designed to support the boring task of picking photos to build an album - or to send to someone.
+
+This project has been archieved in favour of [SeleKtion](https://github.com/alrosot/selektion) 
+> Reason being it didn't met the perfomrnace expections and the desktop application approach mas not so pratical - you had to be in the computer where the images were hosted
 
 [![Build Status](https://travis-ci.org/alrosot/image-categorizer.svg?branch=master)](https://travis-ci.org/alrosot/image-categorizer)
